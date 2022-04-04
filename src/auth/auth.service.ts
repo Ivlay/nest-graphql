@@ -16,24 +16,22 @@ export class AuthService {
   async validateUser(username: string, password: string) {
     const user = await this.usersService.findOne(username);
 
-    const valid = await bcrypt.compare(password, user?.password);
+    if (user) {
+      const valid = await bcrypt.compare(password, user.password);
 
-    if (user && valid) {
-      return user;
+      if (valid) {
+        return user;
+      }
     }
 
     return null;
   }
 
-  async login(context) {
-    const { user, res, req } = context;
-
+  async login(user: User) {
     const access_token = this.jwtServise.sign({
       username: user.username,
       sub: user.id,
     });
-
-    res.cookie('access_token', access_token);
 
     return {
       access_token,

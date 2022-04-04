@@ -13,6 +13,12 @@ export class User {
   id: string;
 
   @Field()
+  createdAt: string;
+
+  @Field()
+  updatedAt: string;
+
+  @Field()
   @Prop({
     unique: true,
   })

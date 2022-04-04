@@ -4,14 +4,13 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
 
 import 'dotenv/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ni2kw.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
-    ),
+    MongooseModule.forRoot('mongodb://localhost:27017/merng'),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
@@ -26,6 +25,7 @@ import 'dotenv/config';
     }),
     UsersModule,
     AuthModule,
+    PostsModule,
   ],
 })
 export class AppModule {}

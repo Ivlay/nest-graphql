@@ -4,6 +4,8 @@
 
 type User {
   id: ID!
+  createdAt: String!
+  updatedAt: String!
   username: String!
   email: String!
 }
@@ -13,14 +15,26 @@ type LoginResponse {
   user: User!
 }
 
+type Post {
+  id: ID!
+  user: User!
+  body: String!
+  commentsCount: Float!
+  likesCount: Float!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Query {
   users: [User!]!
   user(username: String!): User!
+  posts: [Post!]!
 }
 
 type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(createUserInput: CreateUserInput!): User!
+  createPost(createPostInput: CreatePostInput!): Post!
 }
 
 input LoginUserInput {
@@ -33,4 +47,8 @@ input CreateUserInput {
   username: String!
   password: String!
   confirmPassword: String!
+}
+
+input CreatePostInput {
+  body: String!
 }
