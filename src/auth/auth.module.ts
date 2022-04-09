@@ -4,7 +4,6 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from 'src/users/users.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 
 import 'dotenv/config';
@@ -18,6 +17,6 @@ import 'dotenv/config';
       secret: process.env.JWT_SECRET,
     }),
   ],
-  providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
+  providers: [AuthService, AuthResolver, JwtStrategy],
 })
 export class AuthModule {}
