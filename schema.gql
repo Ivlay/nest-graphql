@@ -15,20 +15,39 @@ type LoginResponse {
   user: User!
 }
 
-type Post {
+type Comment {
   id: ID!
-  user: User!
+  username: String!
   body: String!
-  commentsCount: Float!
-  likesCount: Float!
   createdAt: String!
   updatedAt: String!
+}
+
+type Post {
+  id: ID!
+  body: String!
+  createdAt: String!
+  updatedAt: String!
+  username: String!
+  userId: ID!
+  comments: [Comment!]
+  likes: [Like!]
+  commentsCount: Int!
+  likesCount: Int!
+  user: User!
+}
+
+type Like {
+  id: ID!
+  createdAt: String!
+  username: String!
 }
 
 type Query {
   users: [User!]!
   user(username: String!): User!
   posts: [Post!]!
+  post(postId: String!): Post!
 }
 
 type Mutation {

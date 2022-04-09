@@ -10,22 +10,33 @@ import { User } from 'src/users/schemas/user.schemas';
 export class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
-  async create(createUserInput: CreatePostInput) {
-    const { body } = createUserInput;
+  async create(createPostInput: CreatePostInput, user: User) {
+    const { body } = createPostInput;
 
-    // const createdUser = await this.postModel.create({
-    //   body,
-    //   user,
-    // });
+    const createdPost = await this.postModel.create({
+      body,
+      userId: user.id,
+      username: user.username,
+    });
 
-    // return createdUser;
+    return createdPost;
   }
 
   async findAll() {
     return await this.postModel.find().exec();
   }
 
-  async findOne(postId: string) {
-    return await this.postModel.findById(postId);
+  async findById(postId: string) {
+    try {
+      const post = await this.postModel.findById(postId);
+
+      if (post) {
+        return post;
+      }
+
+      throw new Error('Post not found');
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

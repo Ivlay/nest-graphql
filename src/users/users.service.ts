@@ -30,4 +30,8 @@ export class UsersService {
       $or: [{ username }, { email: email || username }],
     });
   }
+
+  async findById(id: string) {
+    return await this.userModel.findById(id);
+  }
 }

@@ -10,7 +10,9 @@ import 'dotenv/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/merng'),
+    MongooseModule.forRoot(
+      `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost:27017/${process.env.DB_NAME}?authSource=admin&retryWrites=true&w=majority`,
+    ),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',

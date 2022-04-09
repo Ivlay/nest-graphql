@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserInputError } from 'apollo-server-express';
+import { UserInputError, AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/schemas/user.schemas';
 import { UsersService } from 'src/users/users.service';
@@ -21,10 +21,16 @@ export class AuthService {
 
       if (valid) {
         return user;
+      } else {
+        throw new AuthenticationError('Password is not exist');
       }
+    } else {
+      throw new AuthenticationError('Username or email is not exist');
     }
+  }
 
-    return null;
+  async validateUserById(id: string) {
+    return this.usersService.findById(id);
   }
 
   async login(user: User) {
