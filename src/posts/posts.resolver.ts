@@ -41,9 +41,11 @@ export class PostsResolver {
   ) {
     return await this.postsService.create(createPostInput, user);
   }
-  // @Mutation()
-  // @UseGuards(GqlAuthGuard)
-  // async likePost(@Args('postId') postId) {}
+  @Mutation(() => Post)
+  @UseGuards(GqlAuthGuard)
+  async likePost(@Args('postId') postId: string, @CurrentUser() user: User) {
+    return await this.postsService.likePost(postId, user);
+  }
 
   @ResolveField(() => Int)
   async commentsCount(@Parent() post: Post) {

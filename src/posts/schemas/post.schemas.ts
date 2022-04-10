@@ -36,13 +36,14 @@ export class Post {
 
   @Field(() => [Like], { nullable: true })
   @Prop()
-  likes: [Like];
+  likes: Like[];
 }
 
 @ObjectType()
 export class Like {
   @Field(() => ID)
-  id: string;
+  @Prop()
+  id?: string;
 
   @Field()
   createdAt: string;

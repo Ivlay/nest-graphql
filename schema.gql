@@ -54,6 +54,7 @@ type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(createUserInput: CreateUserInput!): User!
   createPost(createPostInput: CreatePostInput!): Post!
+  likePost(postId: String!): Post!
 }
 
 input LoginUserInput {

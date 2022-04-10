@@ -39,4 +39,28 @@ export class PostsService {
       throw new Error(error);
     }
   }
+
+  async likePost(postId: string, user: User) {
+    try {
+      const post = await this.findById(postId);
+      const likedPost = post.likes.find(
+        (like) => like.username === user.username,
+      );
+
+      if (likedPost) {
+        post.likes = post.likes.filter(
+          (like) => like.username !== user.username,
+        );
+      } else {
+        post.likes.push({
+          username: user.username,
+          createdAt: new Date().toISOString(),
+        });
+      }
+
+      await post.save();
+
+      return post;
+    } catch (error) {}
+  }
 }
