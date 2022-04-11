@@ -1,6 +1,5 @@
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { User } from 'src/users/schemas/user.schemas';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/AuthGuard';
 import { LoginResponse } from './dto/login-response';
@@ -21,7 +20,7 @@ export class AuthResolver {
     return this.authService.login(context.req);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => LoginResponse)
   signup(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.authService.signup(createUserInput);
   }

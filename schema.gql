@@ -52,7 +52,7 @@ type Query {
 
 type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
-  signup(createUserInput: CreateUserInput!): User!
+  signup(createUserInput: CreateUserInput!): LoginResponse!
   createPost(createPostInput: CreatePostInput!): Post!
   likePost(postId: String!): Post!
 }

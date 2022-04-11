@@ -62,6 +62,16 @@ export class AuthService {
 
     createUserInput.password = hashedPassword;
 
-    return this.usersService.create(createUserInput);
+    const createdUser = await this.usersService.create(createUserInput);
+
+    const access_token = this.jwtServise.sign({
+      username: createdUser.username,
+      sub: createdUser.id,
+    });
+
+    return {
+      user: createdUser,
+      access_token,
+    };
   }
 }
