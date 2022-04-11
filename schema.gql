@@ -15,12 +15,9 @@ type LoginResponse {
   user: User!
 }
 
-type Comment {
-  id: ID!
-  username: String!
-  body: String!
+type Like {
   createdAt: String!
-  updatedAt: String!
+  username: String!
 }
 
 type Post {
@@ -30,17 +27,20 @@ type Post {
   updatedAt: String!
   username: String!
   userId: ID!
-  comments: [Comment!]
   likes: [Like!]
-  commentsCount: Int!
   likesCount: Int!
+  commentsCount: Int!
+  comments: [Comment!]!
   user: User!
 }
 
-type Like {
+type Comment {
   id: ID!
+  userId: ID!
+  postId: ID!
+  body: String!
   createdAt: String!
-  username: String!
+  updatedAt: String!
 }
 
 type Query {
@@ -55,6 +55,7 @@ type Mutation {
   signup(createUserInput: CreateUserInput!): LoginResponse!
   createPost(createPostInput: CreatePostInput!): Post!
   likePost(postId: String!): Post!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
 }
 
 input LoginUserInput {
@@ -71,4 +72,9 @@ input CreateUserInput {
 
 input CreatePostInput {
   body: String!
+}
+
+input CreateCommentInput {
+  body: String!
+  postId: ID!
 }

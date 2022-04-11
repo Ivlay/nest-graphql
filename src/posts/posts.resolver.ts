@@ -9,7 +9,9 @@ import {
   Int,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
-import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { CommentsService } from 'src/comments/comments.service';
+import { Comment } from 'src/comments/schemas/comment.schema';
 import { User } from 'src/users/schemas/user.schemas';
 import { UsersService } from 'src/users/users.service';
 import { CreatePostInput } from './dto/create-post-dto';
@@ -20,7 +22,8 @@ import { Post } from './schemas/post.schemas';
 export class PostsResolver {
   constructor(
     private readonly postsService: PostsService,
-    private userSerice: UsersService,
+    private usersService: UsersService,
+    private commentsService: CommentsService,
   ) {}
 
   @Query(() => [Post], { name: 'posts' })
@@ -48,15 +51,20 @@ export class PostsResolver {
   }
 
   @ResolveField(() => Int)
-  async commentsCount(@Parent() post: Post) {
+  async likesCount(@Parent() post: Post) {
     return post.likes.length;
   }
   @ResolveField(() => Int)
-  async likesCount(@Parent() post: Post) {
-    return post.comments.length;
+  async commentsCount(@Parent() post: Post) {
+    return (await this.commentsService.findCommentsByPostId(post.id)).length;
+  }
+
+  @ResolveField(() => [Comment])
+  async comments(@Parent() post: Post) {
+    return this.commentsService.findCommentsByPostId(post.id);
   }
   @ResolveField(() => User)
   async user(@Parent() post: Post) {
-    return this.userSerice.findById(post.userId);
+    return this.usersService.findById(post.userId);
   }
 }

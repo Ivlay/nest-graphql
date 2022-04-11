@@ -1,12 +1,8 @@
-// type Comment {
-//   id        : ID!
-//   createdAt : String!
-//   userName  : String!
-//   body      : String!
-// }
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
+import { User } from 'src/users/schemas/user.schemas';
+import { Post } from 'src/posts/schemas/post.schemas';
 
 export type CommentDocument = Comment & Document;
 
@@ -18,15 +14,22 @@ export class Comment {
   @Field(() => ID)
   id: string;
 
-  @Field()
+  @Field(() => ID)
   @Prop({
-    unique: true,
     type: MongooseSchema.Types.ObjectId,
-    ref: 'users',
+    ref: User.name,
   })
-  username: string;
+  userId: string;
+
+  @Field(() => ID)
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Post.name,
+  })
+  postId: string;
 
   @Field()
+  @Prop({ required: true })
   body: string;
 
   @Field()
@@ -36,4 +39,4 @@ export class Comment {
   updatedAt: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Comment);
+export const CommentSchema = SchemaFactory.createForClass(Comment);

@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
 
 import 'dotenv/config';
 
@@ -28,6 +29,7 @@ import 'dotenv/config';
     UsersModule,
     AuthModule,
     PostsModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}
