@@ -23,8 +23,8 @@ type Like {
 type Post {
   id: ID!
   body: String!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   username: String!
   userId: ID!
   likes: [Like!]
@@ -33,6 +33,11 @@ type Post {
   comments: [Comment!]!
   user: User!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Comment {
   id: ID!
@@ -47,14 +52,25 @@ type Query {
   users: [User!]!
   user(username: String!): User!
   currentUser: User!
-  posts: [Post!]!
+  posts(paging: PaginationArgsPost!): [Post!]!
   post(postId: String!): Post!
 }
+
+input PaginationArgsPost {
+  order: Order = "desc"
+  orderBy: String = "createdAt"
+  limit: Int = 10
+  skip: Int = 0
+}
+
+"""Order value: asc or desc. Default value: desc, cause order by date"""
+scalar Order
 
 type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(createUserInput: CreateUserInput!): LoginResponse!
   createPost(createPostInput: CreatePostInput!): Post!
+  deletePost(postId: String!): Boolean!
   likePost(postId: String!): Post!
   createComment(createCommentInput: CreateCommentInput!): Comment!
 }

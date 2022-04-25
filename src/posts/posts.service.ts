@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { AuthenticationError } from 'apollo-server-express';
 
 import { Post, PostDocument } from './schemas/post.schemas';
 import { CreatePostInput } from './dto/create-post-dto';
@@ -22,8 +23,24 @@ export class PostsService {
     return createdPost;
   }
 
-  async findAll() {
-    return await this.postModel.find().exec();
+  async remove(postId: string, user: User) {
+    const removedPost = await this.postModel.findOneAndDelete({
+      _id: postId,
+      userId: user.id,
+    });
+
+    if (!removedPost) {
+      throw new AuthenticationError('You cannot remove this post');
+    }
+  }
+
+  async findAll(paging: any) {
+    return await this.postModel
+      .find()
+      .sort({ [paging.orderBy]: paging.order })
+      .skip(paging.skip)
+      .limit(paging.limit)
+      .exec();
   }
 
   async findById(postId: string) {

@@ -17,6 +17,9 @@ import 'dotenv/config';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
+      buildSchemaOptions: {
+        numberScalarMode: 'integer',
+      },
       subscriptions: {
         'graphql-ws': true,
       },

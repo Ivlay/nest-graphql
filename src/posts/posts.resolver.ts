@@ -16,7 +16,7 @@ import { User } from 'src/users/schemas/user.schemas';
 import { UsersService } from 'src/users/users.service';
 import { CreatePostInput } from './dto/create-post-dto';
 import { PostsService } from './posts.service';
-import { Post } from './schemas/post.schemas';
+import { Post, PaginationArgsPost } from './schemas/post.schemas';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -27,8 +27,11 @@ export class PostsResolver {
   ) {}
 
   @Query(() => [Post], { name: 'posts' })
-  async getPosts() {
-    return this.postsService.findAll();
+  async getPosts(
+    @Args('paging', { type: () => PaginationArgsPost })
+    paging: any,
+  ) {
+    return this.postsService.findAll(paging);
   }
 
   @Query(() => Post, { name: 'post' })
@@ -44,6 +47,15 @@ export class PostsResolver {
   ) {
     return await this.postsService.create(createPostInput, user);
   }
+
+  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async deletePost(@Args('postId') postId: string, @CurrentUser() user: User) {
+    await this.postsService.remove(postId, user);
+
+    return true;
+  }
+
   @Mutation(() => Post)
   @UseGuards(GqlAuthGuard)
   async likePost(@Args('postId') postId: string, @CurrentUser() user: User) {

@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Post, PostSchema } from './schemas/post.schemas';
+import { Post, PostSchema, OrderScalar } from './schemas/post.schemas';
 import { PostsResolver } from './posts.resolver';
 import { PostsService } from './posts.service';
 import { UsersModule } from 'src/users/users.module';
@@ -13,7 +13,7 @@ import { CommentsModule } from 'src/comments/comments.module';
     UsersModule,
     forwardRef(() => CommentsModule),
   ],
-  providers: [PostsResolver, PostsService],
+  providers: [PostsResolver, PostsService, OrderScalar],
   exports: [PostsService],
 })
 export class PostsModule {}
