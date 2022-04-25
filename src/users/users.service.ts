@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApolloError } from 'apollo-server-express';
 
 import { User, UserDocument } from './schemas/user.schemas';
 import { CreateUserInput } from 'src/auth/dto/create-user.input';
@@ -31,7 +32,19 @@ export class UsersService {
     });
   }
 
-  async findById(id: string) {
-    return await this.userModel.findById(id);
+  async findById(userId: string) {
+    try {
+      if (Types.ObjectId.isValid(userId)) {
+        const user = await this.userModel.findById(userId);
+
+        if (user) {
+          return user;
+        }
+      }
+
+      throw new ApolloError('User not found');
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

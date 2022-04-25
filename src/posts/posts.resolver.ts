@@ -7,6 +7,7 @@ import {
   Query,
   Resolver,
   Int,
+  Context,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
@@ -30,8 +31,13 @@ export class PostsResolver {
   async getPosts(
     @Args('paging', { type: () => PaginationArgsPost })
     paging: any,
+    @Context() context,
   ) {
-    return this.postsService.findAll(paging);
+    const { count, posts } = await this.postsService.findAll(paging);
+
+    context.res.setHeader('total-count', count);
+
+    return posts;
   }
 
   @Query(() => Post, { name: 'post' })
@@ -68,7 +74,7 @@ export class PostsResolver {
   }
   @ResolveField(() => Int)
   async commentsCount(@Parent() post: Post) {
-    return (await this.commentsService.findCommentsByPostId(post.id)).length;
+    return await this.commentsService.getCommentsCountByPostId(post.id);
   }
 
   @ResolveField(() => [Comment])

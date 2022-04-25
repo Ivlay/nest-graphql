@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApolloError, UserInputError } from 'apollo-server-express';
+
 import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateCommentInput } from './dto/create-comment-dto';
 import { User } from 'src/users/schemas/user.schemas';
-import { UserInputError } from 'apollo-server-express';
 import { PostsService } from 'src/posts/posts.service';
 
 @Injectable()
@@ -42,7 +43,25 @@ export class CommentsService {
 
   async findCommentsByPostId(postId: string) {
     try {
-      return await this.commentModel.find({ postId });
-    } catch (error) {}
+      if (Types.ObjectId.isValid(postId)) {
+        return await this.commentModel.find({ postId });
+      }
+
+      throw new ApolloError('Post id is not valid');
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getCommentsCountByPostId(postId: string) {
+    try {
+      if (Types.ObjectId.isValid(postId)) {
+        return await this.commentModel.count({ postId });
+      }
+
+      throw new ApolloError('Post id is not valid');
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

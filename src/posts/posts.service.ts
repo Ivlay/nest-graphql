@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError, ApolloError } from 'apollo-server-express';
 
 import { Post, PostDocument } from './schemas/post.schemas';
 import { CreatePostInput } from './dto/create-post-dto';
@@ -35,23 +35,30 @@ export class PostsService {
   }
 
   async findAll(paging: any) {
-    return await this.postModel
-      .find()
-      .sort({ [paging.orderBy]: paging.order })
-      .skip(paging.skip)
-      .limit(paging.limit)
-      .exec();
+    const [count, posts] = await Promise.all([
+      this.postModel.count(),
+      this.postModel
+        .find()
+        .sort({ [paging.orderBy]: paging.order })
+        .skip(paging.skip)
+        .limit(paging.limit)
+        .exec(),
+    ]);
+
+    return { count, posts };
   }
 
   async findById(postId: string) {
     try {
-      const post = await this.postModel.findById(postId);
+      if (Types.ObjectId.isValid(postId)) {
+        const post = await this.postModel.findById(postId);
 
-      if (post) {
-        return post;
+        if (post) {
+          return post;
+        }
       }
 
-      throw new Error('Post not found');
+      throw new ApolloError('Post not found');
     } catch (error) {
       throw new Error(error);
     }
@@ -78,6 +85,8 @@ export class PostsService {
       await post.save();
 
       return post;
-    } catch (error) {}
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
