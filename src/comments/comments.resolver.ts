@@ -7,7 +7,7 @@ import { CommentsService } from './comments.service';
 import { CreateCommentInput } from './dto/create-comment-dto';
 import { Comment } from './schemas/comment.schema';
 
-@Resolver()
+@Resolver(() => Comment)
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
   @Mutation(() => Comment)

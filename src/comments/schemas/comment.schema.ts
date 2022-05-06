@@ -21,6 +21,10 @@ export class Comment {
   })
   userId: string;
 
+  @Field()
+  @Prop()
+  username: string;
+
   @Field(() => ID)
   @Prop({
     type: MongooseSchema.Types.ObjectId,

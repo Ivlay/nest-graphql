@@ -32,6 +32,7 @@ export class CommentsService {
           body: createCommentInput.body,
           userId: user.id,
           postId: post.id,
+          username: user.username,
         });
 
         return createdComment;

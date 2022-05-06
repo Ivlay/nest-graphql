@@ -8,6 +8,7 @@ import {
   Resolver,
   Int,
   Context,
+  ID,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
@@ -41,7 +42,7 @@ export class PostsResolver {
   }
 
   @Query(() => Post, { name: 'post' })
-  async getPost(@Args('postId') postId: string) {
+  async getPost(@Args('postId', { type: () => ID }) postId: string) {
     return await this.postsService.findById(postId);
   }
 
@@ -56,7 +57,10 @@ export class PostsResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(GqlAuthGuard)
-  async deletePost(@Args('postId') postId: string, @CurrentUser() user: User) {
+  async deletePost(
+    @Args('postId', { type: () => ID }) postId: string,
+    @CurrentUser() user: User,
+  ) {
     await this.postsService.remove(postId, user);
 
     return true;
@@ -64,7 +68,10 @@ export class PostsResolver {
 
   @Mutation(() => Post)
   @UseGuards(GqlAuthGuard)
-  async likePost(@Args('postId') postId: string, @CurrentUser() user: User) {
+  async likePost(
+    @Args('postId', { type: () => ID }) postId: string,
+    @CurrentUser() user: User,
+  ) {
     return await this.postsService.likePost(postId, user);
   }
 

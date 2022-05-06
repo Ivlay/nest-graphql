@@ -42,6 +42,7 @@ scalar DateTime
 type Comment {
   id: ID!
   userId: ID!
+  username: String!
   postId: ID!
   body: String!
   createdAt: String!
@@ -53,7 +54,7 @@ type Query {
   user(username: String!): User!
   currentUser: User!
   posts(paging: PaginationArgsPost!): [Post!]!
-  post(postId: String!): Post!
+  post(postId: ID!): Post!
 }
 
 input PaginationArgsPost {
@@ -70,8 +71,8 @@ type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(createUserInput: CreateUserInput!): LoginResponse!
   createPost(createPostInput: CreatePostInput!): Post!
-  deletePost(postId: String!): Boolean!
-  likePost(postId: String!): Post!
+  deletePost(postId: ID!): Boolean!
+  likePost(postId: ID!): Post!
   createComment(createCommentInput: CreateCommentInput!): Comment!
 }
 
