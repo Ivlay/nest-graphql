@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as dayjs from 'dayjs';
+import { Response } from 'express';
 import { UserInputError, AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/schemas/user.schemas';
@@ -33,10 +35,15 @@ export class AuthService {
     return this.usersService.findById(id);
   }
 
-  async login(user: User) {
+  async login(user: User, res: Response) {
     const access_token = this.jwtServise.sign({
       username: user.username,
       sub: user.id,
+    });
+
+    res.cookie('access_token', access_token, {
+      expires: dayjs().set('hour', 1).add(26, 'hours').toDate(),
+      httpOnly: true,
     });
 
     return {
@@ -45,7 +52,7 @@ export class AuthService {
     };
   }
 
-  async signup(createUserInput: CreateUserInput) {
+  async signup(createUserInput: CreateUserInput, res: Response) {
     const { username, email, password, confirmPassword } = createUserInput;
 
     if (password !== confirmPassword) {
@@ -67,6 +74,11 @@ export class AuthService {
     const access_token = this.jwtServise.sign({
       username: createdUser.username,
       sub: createdUser.id,
+    });
+
+    res.cookie('access_token', access_token, {
+      expires: dayjs().set('hour', 1).add(26, 'hours').toDate(),
+      httpOnly: true,
     });
 
     return {

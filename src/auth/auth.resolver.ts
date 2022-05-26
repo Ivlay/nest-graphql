@@ -17,11 +17,14 @@ export class AuthResolver {
     @Args('loginUserInput') _loginUserInput: LoginUserInput,
     @Context() context,
   ) {
-    return this.authService.login(context.body);
+    return this.authService.login(context.body, context.res);
   }
 
   @Mutation(() => LoginResponse)
-  signup(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.authService.signup(createUserInput);
+  signup(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+    @Context() context,
+  ) {
+    return this.authService.signup(createUserInput, context.res);
   }
 }
