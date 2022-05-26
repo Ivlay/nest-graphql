@@ -15,10 +15,13 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
+    "migrate:latest": "migrate-mongo up",
+    "migrate:revert": "migrate-mongo down",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "postinstall": " npm i -g migrate-mongo"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.4",
@@ -35,6 +38,7 @@
     "dayjs": "^1.11.2",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
+    "migrate-mongo": "^9.0.0",
     "mongoose": "^6.2.2",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
